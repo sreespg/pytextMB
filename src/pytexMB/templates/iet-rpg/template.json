@@ -1,0 +1,13 @@
+{
+  "title": "IET Renewable Power Generation (Wiley NJD v5, two columns)",
+  "latex": "template.tex",
+  "csl": "the-institution-of-engineering-and-technology.csl",
+  "files": [],
+  "external": {
+    "name": "Wiley NJD v5 class",
+    "env": "WILEY_NJD_DIR",
+    "folder": "wiley-njd-v5",
+    "files": ["WileyNJDv5.cls", "NJDnatbib.sty", "NJDapacite.sty", "LETTERSP.STY"],
+    "instructions": "Download Wiley's NJD v5 LaTeX template (https://authors.wiley.com/author-resources/Journal-Authors/Prepare/new-journal-design.html, or the Overleaf 'Wiley New Journal Design version 5' template) and copy these files into that folder. The class also needs the ebgaramond, algorithms and algorithmicx LaTeX packages."
+  }
+}

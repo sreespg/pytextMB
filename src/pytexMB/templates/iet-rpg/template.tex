@@ -1,0 +1,107 @@
+% IET Renewable Power Generation (Wiley): Wiley New Journal Design v5 class
+% with the options Wiley's journal list gives for this title -- EB Garamond,
+% two columns, MPS (numbered) references. The class is Wiley's and is not
+% bundled; see README.md in this folder. Metadata used beyond
+% title/author/abstract/keywords: short-title (running head), article-type,
+% journal, affiliation, corresponding-author.
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[Garamond2COL,MPS]{WileyNJDv5}
+
+\usepackage{etoolbox}
+% Long DOIs and repository URLs must break inside a narrow column.
+\usepackage{xurl}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+% Compact process-diagram palette shared with the other templates, so TikZ
+% figures render the same whichever journal is targeted.
+\definecolor{wfBlue}{RGB}{68,104,180}
+\definecolor{wfOrange}{RGB}{235,128,42}
+\definecolor{wfGreen}{RGB}{103,166,64}
+\definecolor{wfDark}{RGB}{48,73,117}
+\definecolor{wfGray}{RGB}{166,166,166}
+\definecolor{wfLight}{RGB}{242,242,242}
+
+\makeatletter
+% The class abbreviates "Given Surname" to "G. Surname" by splitting at the
+% first space, and breaks on a name without one. Pass such names through.
+\let\mc@filtername\filtername
+\def\filtername#1\@nil{\mc@splitname#1 \mc@end{#1}}
+\def\mc@splitname#1 #2\mc@end#3{\ifx\relax#2\relax#3\else\mc@filtername#3\@nil\fi}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\def\fps@figure{tbp}
+\makeatother
+
+% The framed Abbreviations glossary floats: Wiley's full-width title block
+% leaves too little of the first column to hold it inline.
+\newsavebox{\abbreviationscontent}
+\newenvironment{abbreviationsbox}
+ {\begin{table}[tp]\centering
+  \begin{lrbox}{\abbreviationscontent}\begin{minipage}{0.94\linewidth}
+  \textbf{Abbreviations}\par\smallskip
+  \footnotesize}
+ {\end{minipage}\end{lrbox}\fbox{\usebox{\abbreviationscontent}}\end{table}}
+
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{2em}
+\urlstyle{same}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% The manuscript numbers its own headings ("1. Introduction").
+\setcounter{secnumdepth}{-\maxdimen}
+
+% Definitions used by Pandoc's CSL bibliography output.
+\providecommand{\bibfont}{\small}
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{2.8em}
+\newlength{\cslentryspacingunit}
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2]
+ {\bibfont
+  \setlength{\parindent}{0pt}%
+  \ifodd #1\let\oldpar\par\def\par{\hangindent=\cslhangindent\oldpar}\fi
+  \setlength{\parskip}{#2\cslentryspacingunit}}
+ {}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth-\csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\articletype{$if(article-type)$$article-type$$else$Article$endif$}
+\journal{$if(journal)$$journal$$else$IET Renewable Power Generation$endif$}
+% Without these the footer reads ";0--20", numbers the first page 0, and
+% leaves an empty volume; 00 is the placeholder Wiley's own template uses.
+\copyyear{\the\year}
+\startpage{1}
+\volume{00}
+\raggedbottom
+
+\title{$title$}
+
+$if(affiliation)$
+\author[1]{$author$}
+\address[1]{\orgname{$affiliation$}}
+$else$
+\author{$author$}
+$endif$
+\authormark{$author$}
+\titlemark{$if(short-title)$$short-title$$else$$title$$endif$}
+$if(corresponding-author)$
+\corres{$corresponding-author$}
+$endif$
+
+\abstract[Abstract]{$abstract$}
+
+\keywords{$for(keywords)$$keywords$$sep$, $endfor$}
+
+\begin{document}
+
+\maketitle
+
+% pytexMB:body-start -- the Word copy keeps only what lies between
+% these markers, so no journal-specific LaTeX reaches it.
+$body$
+% pytexMB:body-end
+
+\end{document}

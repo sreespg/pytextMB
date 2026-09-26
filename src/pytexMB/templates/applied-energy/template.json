@@ -1,0 +1,6 @@
+{
+  "title": "Applied Energy (Elsevier CAS, two columns)",
+  "latex": "template.tex",
+  "csl": "elsevier-vancouver.csl",
+  "files": ["cas-dc.cls", "cas-common.sty", "cas-model2-names.bst"]
+}

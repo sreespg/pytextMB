@@ -1,0 +1,16 @@
+% Front matter for the Word review copy, rendered from the manuscript's YAML
+% and joined to the body of the generated LaTeX. Pandoc's LaTeX reader turns
+% it back into Word's Title, Author, and Abstract styles.
+\documentclass{article}
+\title{$title$}
+\author{$for(author)$$author$$sep$ \and $endfor$}
+\begin{document}
+\maketitle
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+$if(keywords)$
+\noindent\textbf{Keywords:} $for(keywords)$$keywords$$sep$, $endfor$
+$endif$

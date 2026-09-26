@@ -1,0 +1,103 @@
+% University of Agder (UiA) PhD thesis, following the structure of UiA's
+% own thesis.tex (template V3, 2026). The UiA layout itself -- front pages,
+% page style, fonts -- comes from UiA's header/ files, which are copied in
+% from your UiA thesis project; see README.md in this folder.
+%
+% Metadata used: preface, acknowledgements, abstract, publications (each a
+% Markdown block, placed before the table of contents). Title, author, and
+% the other front-page details come from header/information.tex.
+\documentclass[12pt, final]{extbook}
+
+\input{header/header}
+\input{header/math}
+
+% What Pandoc's output and the print table layout need; a no-op for any
+% package UiA's header already loads.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{calc}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{etoolbox}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+\setlength{\marginparwidth}{2cm}
+
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{2em}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% The Abbreviations glossary: a framed box where it stands in the text.
+\newsavebox{\abbreviationscontent}
+\newenvironment{abbreviationsbox}
+ {\begin{lrbox}{\abbreviationscontent}\begin{minipage}{0.94\linewidth}
+  \textbf{Abbreviations}\par\smallskip
+  \footnotesize}
+ {\end{minipage}\end{lrbox}\begin{center}\fbox{\usebox{\abbreviationscontent}}\end{center}}
+
+% Definitions used by Pandoc's CSL bibliography output.
+\providecommand{\bibfont}{\small}
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{2.8em}
+\newlength{\cslentryspacingunit}
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2]
+ {\bibfont
+  \setlength{\parindent}{0pt}%
+  \ifodd #1\let\oldpar\par\def\par{\hangindent=\cslhangindent\oldpar}\fi
+  \setlength{\parskip}{#2\cslentryspacingunit}}
+ {}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth-\csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\begin{document}
+
+\input{header/information}
+
+\makefront
+
+% Introductory part, in the order of UiA's thesis.tex.
+$if(preface)$
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+$preface$
+$endif$
+$if(acknowledgements)$
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+$acknowledgements$
+$endif$
+$if(abstract)$
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+$abstract$
+$endif$
+$if(publications)$
+\chapter*{Publications}
+\addcontentsline{toc}{chapter}{Publications}
+$publications$
+$endif$
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\configureMainPart
+
+% pytexMB:body-start -- the Word copy keeps only what lies between
+% these markers, so no journal-specific LaTeX reaches it.
+$body$
+% pytexMB:body-end
+
+\end{document}
