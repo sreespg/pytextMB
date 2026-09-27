@@ -29,7 +29,7 @@ commands:
   rebuild   clear this template's outputs, then build the PDF and the DOCX
 
 The manuscript defaults to the nearest manuscript.md in this folder or one
-above it. Its references, figures, and figure layouts default to their places
+above it. Its references and figures default to their places
 beside it; the options below point them elsewhere."""
 
 EPILOG = """\
@@ -70,7 +70,6 @@ def parse(argv):
     inputs.add_argument('--list-templates', action='store_true', help='list built-in templates and exit')
     inputs.add_argument('-b', '--bibliography', metavar='FILE', help='BibTeX file')
     inputs.add_argument('--figures', metavar='DIR', help='figure folder')
-    inputs.add_argument('--layouts', metavar='FILE', help='figure layout file (latex-blocks.md)')
     inputs.add_argument('--class-dir', metavar='DIR',
                         help="folder with a template's unshipped class files (Wiley's, for iet-rpg)")
     inputs.add_argument('-o', '--output-dir', metavar='DIR',
@@ -109,7 +108,7 @@ def main(argv=None):
             clean(source, output_dir=args.output_dir, input_dir=args.input_dir)
             return 0
         build(source, COMMANDS[command], template=args.template,
-              bibliography=args.bibliography, figures=args.figures, layouts=args.layouts,
+              bibliography=args.bibliography, figures=args.figures,
               class_dir=args.class_dir, output_dir=args.output_dir,
               input_dir=args.input_dir, engine=args.engine,
               force=args.force, fresh=command == 'rebuild', strict=args.strict)

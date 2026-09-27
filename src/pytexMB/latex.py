@@ -15,7 +15,7 @@ CITATION = re.compile(r'\[@[A-Za-z0-9_:-]+(?:\s*;\s*@[A-Za-z0-9_:-]+)*\]')
 def build_tex(paths, strict=False):
     require('pandoc', 'rsvg-convert')
     stage(paths)
-    compose(paths.stage / paths.source.name, paths.layouts)
+    compose(paths.stage / paths.source.name)
     shutil.rmtree(paths.latex, ignore_errors=True)
     paths.latex.mkdir(parents=True)
     shutil.copytree(paths.stage / 'figures', paths.latex / 'figures')

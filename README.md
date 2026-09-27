@@ -111,7 +111,6 @@ different journals never overwrite each other.
 | `manuscript` | first argument | `manuscript.md` in the input folder or above (command line only) |
 | `bibliography` | `-b` | `references.bib` beside the manuscript |
 | `figures` | `--figures` | `figures/` beside the manuscript |
-| `layouts` | `--layouts` | `asset/templates/latex-blocks.md` beside the manuscript |
 | `class_dir` | `--class-dir` | see [Wiley class files](#wiley-class-files-for-iet-rpg) |
 | `output_dir` | `-o` | `build/` beside the manuscript |
 
@@ -169,27 +168,14 @@ ignored.
   abbreviations glossary. Put it under a `# Abbreviations` heading; the
   heading is folded into the box.
 - **Figures** are Markdown images with an identifier and a width:
-  `![Caption.](figures/plot.svg){#fig:name width=full}`. SVG figures are
-  converted to PDF for LaTeX and to PNG for Word.
+  `![Caption.](figures/plot.svg){#fig:name width=full}`. Use `width=half`
+  for one column; `width` defaults to `full`. pytexMB writes the LaTeX
+  figure from this line alone: no layout file or raw LaTeX is needed. SVG
+  figures are converted to PDF for LaTeX and to PNG for Word; a TikZ `.tex`
+  path in place of the SVG is `\input` and scaled to the same width.
 
-Each figure also needs a **layout block** in the layout file
-(`asset/templates/latex-blocks.md` by default). The block gives the figure's
-print size and label; the caption comes from the manuscript:
-
-````markdown
-<!-- latex-block:1 -->
-```{=latex}
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.9\textwidth]{figures/plot.pdf}
-\caption{CAPTION_FROM_MANUSCRIPT}
-\label{fig:name}
-\end{figure*}
-```
-````
-
-A manuscript without figures needs neither a `figures/` folder nor a layout
-file.
+A manuscript without figures needs no `figures/` folder. `abstract` and
+`keywords` are optional; the templates leave out what is missing.
 
 ## Wiley class files (for iet-rpg)
 

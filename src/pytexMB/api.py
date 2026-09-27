@@ -58,7 +58,7 @@ def build(manuscript=None, formats=None, *, fresh=False, **overrides):
         raise BuildError(f'Unknown format(s) {", ".join(sorted(unknown))}; '
                          f'choose from {", ".join(FORMATS)}')
     paths = Paths.create(source, files.resolved('bibliography'), files.resolved('figures'),
-                         files.resolved('layouts'), chosen.template,
+                         chosen.template,
                          files.resolved('class_dir'), files.resolved('output_dir'))
     force = chosen.force
     if fresh:

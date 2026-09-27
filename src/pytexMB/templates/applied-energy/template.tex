@@ -123,13 +123,17 @@ $if(corresponding-author)$
 \cortext[1]{Corresponding author: $corresponding-author$}
 $endif$
 
+$if(abstract)$
 \begin{abstract}
 $abstract$
 \end{abstract}
+$endif$
 
+$if(keywords)$
 \begin{keywords}
 $for(keywords)$$keywords$$sep$ \sep $endfor$
 \end{keywords}
+$endif$
 
 \maketitle
 

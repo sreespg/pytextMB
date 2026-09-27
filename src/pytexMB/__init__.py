@@ -31,7 +31,7 @@ Stages, each in its own module:
   api.py      build() and clean(); decides which outputs are stale
   template.py load a journal template (templates/<name>/template.json)
   latex.py    stage sources, run Pandoc, and post-process the .tex file
-  compose.py  merge the manuscript's figure layouts (latex-blocks.md)
+  compose.py  write each Markdown figure as its LaTeX figure environment
   tables.py   replace Pandoc's longtables with the print table layout
   pdf.py      compile the LaTeX package, rerunning until references settle
   docx.py     turn the same LaTeX into the Word review copy and style it

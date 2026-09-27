@@ -8,11 +8,6 @@ from pathlib import Path
 from .errors import BuildError
 from .template import Template
 
-# The manuscript's own figure layouts (sizes and labels per figure), which
-# belong to the manuscript rather than to any journal template.
-LAYOUTS = Path('asset') / 'templates' / 'latex-blocks.md'
-
-
 def _resolve(value, default):
     return Path(value).expanduser().resolve() if value is not None else default
 
@@ -26,12 +21,11 @@ class Paths:
     source: Path
     bibliography: Path
     figures: Path
-    layouts: Path
     template: Template
     output: Path
 
     @classmethod
-    def create(cls, source, bibliography=None, figures=None, layouts=None,
+    def create(cls, source, bibliography=None, figures=None,
                template=None, class_dir=None, output_dir=None):
         source = Path(source).expanduser().resolve()
         if not source.is_file():
@@ -44,7 +38,6 @@ class Paths:
             source=source,
             bibliography=_resolve(bibliography, root / 'references.bib'),
             figures=_resolve(figures, root / 'figures'),
-            layouts=_resolve(layouts, root / LAYOUTS),
             template=journal,
             # One subfolder per template, so each journal's outputs coexist.
             output=_resolve(output_dir, default_output(source)) / journal.name,
@@ -54,9 +47,8 @@ class Paths:
 
     def check(self):
         """Fail before any work starts, naming every missing input at once."""
-        # The figure folder and layout file are optional: a manuscript without
-        # figures needs neither, and compose() names any figure that lacks a
-        # layout block.
+        # The figure folder is optional: a manuscript may have no figures, and
+        # compose() names any figure file that is missing.
         missing = [path for path in [self.bibliography] if not path.is_file()]
         if missing:
             raise BuildError('Missing build inputs:\n- ' + '\n- '.join(map(str, missing)))
@@ -96,7 +88,6 @@ class Paths:
         """Every file whose content can change an output. The build code and
         the template are included, so editing either rebuilds without --force."""
         files = [self.source, self.bibliography, *self.template.inputs()]
-        files += [self.layouts] if self.layouts.is_file() else []
         files += [path for path in self.figures.rglob('*') if path.is_file()]
         files += [path for path in self.code.glob('*.py')] + [self.code / 'docx_front.tex']
         return sorted(set(files))

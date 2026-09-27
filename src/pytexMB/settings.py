@@ -48,7 +48,6 @@ class FileSettings(_Group):
     manuscript: Optional[Path] = None    # the Markdown file
     bibliography: Optional[Path] = None  # default: references.bib beside the manuscript
     figures: Optional[Path] = None       # default: figures/ beside the manuscript
-    layouts: Optional[Path] = None       # default: asset/templates/latex-blocks.md
     class_dir: Optional[Path] = None     # a template's unshipped class files
     output_dir: Optional[Path] = None    # default: build/ beside the manuscript;
                                          # each template writes to a subfolder
