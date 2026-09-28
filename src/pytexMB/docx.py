@@ -223,10 +223,8 @@ def styles(path):
             if not count:
                 raise BuildError('A DOCX table carries no alignment to centre')
             return block
-        document, count = re.subn(r'<w:tblPr>.*?</w:tblPr>', centre, document, flags=re.S)
-        if not count:
-            raise BuildError('The generated DOCX has no tables to centre')
-        return document
+        # A manuscript without tables has nothing to centre.
+        return re.sub(r'<w:tblPr>.*?</w:tblPr>', centre, document, flags=re.S)
 
     edits = {'Table': rule_table, 'Compact': size_cells, 'Figure': centre_figures}
     with zipfile.ZipFile(path) as archive:

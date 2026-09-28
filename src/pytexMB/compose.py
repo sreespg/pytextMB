@@ -47,6 +47,6 @@ def compose(path):
     # Captions are raw LaTeX now, which citeproc never reads; cite every key
     # once in a hidden block so each still gets a bibliography entry, and
     # resolve_raw_latex_citations() numbers the caption citations afterwards.
-    keys = list(dict.fromkeys(re.findall(r'@([A-Za-z0-9_:-]+)', source)))
+    keys = list(dict.fromkeys(re.findall(r'(?<![\w.])@([A-Za-z0-9_:-]+)', source)))
     source += '\n```{=latex}\n\\iffalse\n```\n[' + '; '.join('@' + k for k in keys) + ']\n```{=latex}\n\\fi\n```\n'
     path.write_text(source, encoding='utf-8')
