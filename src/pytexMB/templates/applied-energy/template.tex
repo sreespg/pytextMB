@@ -16,12 +16,18 @@
 % class would prefer if both were available. STIX and Inconsolata
 % installed locally (fonts-stix, fonts-inconsolata); Latin Modern Sans
 % ships with texlive already. fontspec overrides cas-dc.cls's own
-% pdfLaTeX-era stix.sty loading regardless.
-\setmainfont{STIX}
+% pdfLaTeX-era stix.sty loading regardless. Without STIX or Inconsolata
+% installed, the build falls back to TeX Gyre Termes (a Times design, as
+% STIX is) and Latin Modern Mono, which TeX Live ships, and warns.
+\IfFontExistsTF{STIX}{\setmainfont{STIX}}{%
+  \PackageWarningNoLine{pytexMB}{STIX not installed; using TeX Gyre Termes}%
+  \setmainfont{TeX Gyre Termes}}
 \setsansfont{Latin Modern Sans}
-\setmonofont{Inconsolata}
+\IfFontExistsTF{Inconsolata}{\setmonofont{Inconsolata}}{%
+  \PackageWarningNoLine{pytexMB}{Inconsolata not installed; using Latin Modern Mono}%
+  \setmonofont{Latin Modern Mono}}
 \usepackage{unicode-math}
-\setmathfont{STIX Math}
+\IfFontExistsTF{STIX Math}{\setmathfont{STIX Math}}{\setmathfont{TeX Gyre Termes Math}}
 \usepackage{longtable}
 \usepackage{calc}
 \usepackage{etoolbox}

@@ -28,6 +28,13 @@ def available():
             for folder in sorted(BUILTIN.iterdir()) if (folder / 'template.json').is_file()}
 
 
+def manifest(name):
+    """A built-in template's template.json."""
+    if name not in available():
+        raise BuildError(f'Unknown template {name!r}; built-in templates: ' + ', '.join(available()))
+    return json.loads((BUILTIN / name / 'template.json').read_text(encoding='utf-8'))
+
+
 @dataclass(frozen=True)
 class Template:
     name: str
@@ -61,7 +68,7 @@ class Template:
                 latex=folder / manifest['latex'],
                 csl=folder / manifest['csl'],
                 files=tuple((folder / name, Path(name)) for name in manifest.get('files', [])),
-                external=tuple(_external(manifest['external'], class_dir))
+                external=tuple(_external(manifest['external'], class_dir, folder.name))
                 if manifest.get('external') else (),
                 engine=manifest.get('engine'),
                 pandoc_args=tuple(manifest.get('pandoc_args', [])))
@@ -90,7 +97,7 @@ class Template:
                 + [source for source, _ in self.external])
 
 
-def _external(entry, class_dir):
+def _external(entry, class_dir, template):
     """Find the files a template cannot ship, in the first folder that has
     all of entry["files"]: class_dir, then $<env>, then the user data folder.
     Normally just those files are used. With "copy": "folder", the whole
@@ -114,5 +121,6 @@ def _external(entry, class_dir):
     raise BuildError(
         f'{entry["name"]} not found. Needed: {", ".join(entry["files"])}\n'
         f'Looked in:\n{checked}\n'
-        f'Pass class_dir= (--class-dir), set {entry["env"]}, or copy them into {default}.\n'
+        f'Run `pytexMB install-files {template} <the download, .zip or folder>`, '
+        f'or pass class_dir= (--class-dir), or set {entry["env"]}.\n'
         f'{entry["instructions"]}')

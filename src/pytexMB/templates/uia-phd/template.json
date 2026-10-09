@@ -12,6 +12,6 @@
     "copy": "folder",
     "files": ["header/header.tex", "header/information.tex", "header/math.tex"],
     "exclude": ["thesis.tex", "chapters", "appendix"],
-    "instructions": "Open UiA's Overleaf template 'PhD Thesis Template, University of Agder (UiA) 2026' (https://www.overleaf.com/latex/templates/phd-thesis-template-university-of-agder-uia-2026/gghyfkchxxzw) as a project, fill in header/information.tex, download it with Menu > Download > Source, and unzip it into that folder."
+    "instructions": "Open UiA's Overleaf template 'PhD Thesis Template, University of Agder (UiA) 2026' (https://www.overleaf.com/latex/templates/phd-thesis-template-university-of-agder-uia-2026/gghyfkchxxzw) as a project, fill in header/information.tex, and download it with Menu > Download > Source."
   }
 }

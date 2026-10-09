@@ -4,21 +4,41 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pytexMB"
-version = "1.0.0"
+dynamic = ["version"]
 description = "Build a manuscript's PDF, Word copy, and LaTeX package from Markdown"
 readme = "README.md"
+authors = [{ name = "Sreekumar" }]
 requires-python = ">=3.9"
 dependencies = []
+keywords = ["markdown", "latex", "pandoc", "manuscript", "journal", "docx"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Text Processing :: Markup :: LaTeX",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
 
 [project.urls]
 Repository = "https://github.com/sreespg/pytextMB"
+Issues = "https://github.com/sreespg/pytextMB/issues"
 
 [project.scripts]
 pytexMB = "pytexMB.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "pytexMB.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 # The journal templates ship inside the package.
 [tool.setuptools.package-data]
-pytexMB = ["docx_front.tex", "templates/*/*"]
+pytexMB = ["docx_front.tex", "header.plain", "templates/*/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["latex: builds real PDFs; skipped when Pandoc or XeLaTeX is missing"]

@@ -30,14 +30,19 @@ def build_docx(paths):
     front = run(['pandoc', str(paths.source), '--to=latex', f'--template={FRONT_MATTER}'],
                 what='pandoc (Word front matter)').stdout
     tex.write_text(front + '\n\n' + manuscript_body(paths.tex) + '\n\\end{document}\n', encoding='utf-8')
-    convert_svgs(sorted(paths.figures.rglob('*.svg')),
+    # Word shows PNG and JPEG as they are; SVG figures are rendered to PNG.
+    figures = sorted((paths.latex / 'figures').iterdir())
+    for path in figures:
+        if path.suffix.lower() in ('.png', '.jpg', '.jpeg'):
+            shutil.copy2(path, stage / 'figures')
+    convert_svgs([path for path in figures if path.suffix.lower() == '.svg'],
                  lambda svg: stage / 'figures' / (svg.stem + '.png'), ['-w', str(FIGURE_PIXELS)])
     prepare_tex(tex)
     missing = sorted(set(re.findall(r'\\includegraphics(?:\[[^]]*\])?\{(figures/[^}]+)\}',
                                     tex.read_text(encoding='utf-8')))
                      - {str(path.relative_to(stage)) for path in stage.rglob('figures/*')})
     if missing:
-        raise BuildError('Word figures missing (only SVG figures are converted): ' + ', '.join(missing))
+        raise BuildError('Word figures missing (only SVG, PNG, and JPEG figures reach Word): ' + ', '.join(missing))
     run(['pandoc', tex.name, '--resource-path=.', f'--output={docx.name}'],
         cwd=stage, what='pandoc (LaTeX to Word)')
     styles(docx)

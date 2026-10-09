@@ -15,7 +15,7 @@ CITATION = re.compile(r'\[@[A-Za-z0-9_:-]+(?:\s*;\s*@[A-Za-z0-9_:-]+)*\]')
 def build_tex(paths, strict=False):
     require('pandoc', 'rsvg-convert')
     stage(paths)
-    compose(paths.stage / paths.source.name)
+    compose(paths.stage / paths.source.name, paths.staged)
     shutil.rmtree(paths.latex, ignore_errors=True)
     paths.latex.mkdir(parents=True)
     shutil.copytree(paths.stage / 'figures', paths.latex / 'figures')
@@ -26,7 +26,7 @@ def build_tex(paths, strict=False):
     # Command-line --bibliography and --csl override the manuscript's YAML, so
     # the template decides the reference style and the .bib may have any name.
     result = run(['pandoc', paths.source.name, '--citeproc', '--standalone', '--to=latex',
-                  f'--bibliography={paths.bibliography.name}',
+                  *(f'--bibliography={path.name}' for path in paths.bibliographies),
                   f'--csl={paths.template.csl}',
                   f'--template={paths.template.latex}', *paths.template.pandoc_args,
                   '--resource-path=.', f'--output={paths.tex}'],
@@ -34,7 +34,9 @@ def build_tex(paths, strict=False):
     # Citeproc prints a missing key as `???` and carries on.
     missing = re.findall(r'citation (\S+) not found', result.stderr)
     if missing and strict:
-        raise BuildError(f'--strict: citations not in {paths.bibliography.name}: ' + ', '.join(missing))
+        raise BuildError('--strict: citations not in '
+                         + (', '.join(path.name for path in paths.bibliographies) or 'any bibliography')
+                         + ': ' + ', '.join(missing))
     number_labeled_equations(paths.tex)
     tables(paths.tex)
     resolve_raw_latex_citations(paths.tex, paths.template.csl)
@@ -43,16 +45,16 @@ def build_tex(paths, strict=False):
 
 def stage(paths):
     """Copy the sources to <output>/.stage, where compose() may rewrite them and
-    the SVG figures get the PDF versions LaTeX includes. Sources are never
+    the SVG figures get the PDF versions LaTeX includes. Only the figures the
+    manuscript shows are copied, each into figures/. Sources are never
     modified in place."""
     shutil.rmtree(paths.stage, ignore_errors=True)
-    paths.stage.mkdir(parents=True)
+    (paths.stage / 'figures').mkdir(parents=True)
     shutil.copy2(paths.source, paths.stage)
-    shutil.copy2(paths.bibliography, paths.stage)
-    if paths.figures.is_dir():
-        shutil.copytree(paths.figures, paths.stage / 'figures')
-    else:
-        (paths.stage / 'figures').mkdir()
+    for path in paths.bibliographies:
+        shutil.copy2(path, paths.stage)
+    for asset, path in paths.figures:
+        shutil.copy2(path, paths.stage / paths.staged(asset))
     convert_svgs(sorted((paths.stage / 'figures').rglob('*.svg')),
                  lambda svg: svg.with_suffix('.pdf'), ['--format=pdf'])
 

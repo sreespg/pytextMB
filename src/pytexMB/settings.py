@@ -9,7 +9,8 @@ choices once:
     pytexMB.build()                  # uses both
     pytexMB.build(word=True)         # one call may override any setting
 
-File settings say where things are; build settings say what to make."""
+File settings say where things are; build settings say what to make. None
+are needed: every one left unset is worked out from the manuscript."""
 from dataclasses import dataclass, fields, replace
 from pathlib import Path
 from typing import Optional
@@ -42,12 +43,12 @@ class _Group:
 @dataclass(frozen=True)
 class FileSettings(_Group):
     """Where things are. Relative paths are taken relative to input_dir, or
-    to the current folder when input_dir is not set. None means the default
-    beside the manuscript."""
+    to the current folder when input_dir is not set. None means: work it out
+    from the manuscript."""
     input_dir: Optional[Path] = None     # base folder for the relative paths below
-    manuscript: Optional[Path] = None    # the Markdown file
-    bibliography: Optional[Path] = None  # default: references.bib beside the manuscript
-    figures: Optional[Path] = None       # default: figures/ beside the manuscript
+    manuscript: Optional[Path] = None    # default: manuscript.md, or the only .md file
+    bibliography: Optional[Path] = None  # default: the header's bibliography, else
+                                         # references.bib or the only .bib beside it
     class_dir: Optional[Path] = None     # a template's unshipped class files
     output_dir: Optional[Path] = None    # default: build/ beside the manuscript;
                                          # each template writes to a subfolder
@@ -70,7 +71,8 @@ class FileSettings(_Group):
 @dataclass(frozen=True)
 class BuildSettings(_Group):
     """What to make and how."""
-    template: Optional[str] = None       # name or folder; default 'applied-energy'
+    template: Optional[str] = None       # name or folder; default: the header's
+                                         # template, else 'applied-energy'
     pdf: bool = True                     # build the PDF
     word: bool = True                    # build the Word copy
     engine: Optional[str] = None         # default: $PANDOC_PDF_ENGINE or xelatex

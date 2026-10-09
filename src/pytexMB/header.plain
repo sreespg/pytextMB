@@ -1,0 +1,9 @@
+$for(bibliography)$
+bibliography=$bibliography$
+$endfor$
+$if(template)$
+template=$template$
+$endif$
+$if(after-build)$
+after-build=$after-build$
+$endif$

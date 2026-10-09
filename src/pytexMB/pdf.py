@@ -51,6 +51,10 @@ def latex_errors(text, context=3):
 
 
 def report_warnings(text, logfile, strict):
+    # A template's own warnings, such as a font it had to substitute, are
+    # shown but never fail a --strict build.
+    for notice in sorted(set(re.findall(r'Package pytexMB Warning: (.+)', text))):
+        warn(notice.strip().rstrip('.'))
     problems = sorted(set(re.findall(
         r"LaTeX Warning: ((?:Reference|Citation) `[^']+' on page \d+ undefined)", text)))
     if RERUN.search(text):

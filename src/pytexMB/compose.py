@@ -6,7 +6,8 @@ width, as in
 
 width=full spans both columns and width=half fits one (default: full). An SVG
 is included as the PDF that stage() converts it to; a .tex figure (TikZ) is
-\\input and scaled to the same width."""
+\\input and scaled to the same width. Every figure is copied into the LaTeX
+package's figures/ folder, wherever the Markdown says it is."""
 import re
 
 from .errors import BuildError
@@ -33,20 +34,22 @@ def figure(caption, asset, attributes):
             + environment + '}\n```')
 
 
-def compose(path):
+def citation_keys(source):
+    """Every cited key, in order of first use. The lookbehind skips email
+    addresses."""
+    return list(dict.fromkeys(re.findall(r'(?<![\w.])@([A-Za-z0-9_:-]+)', source)))
+
+
+def compose(path, staged):
+    """`staged` maps a figure path as written to its place in the package."""
     source = path.read_text(encoding='utf-8')
-    assets = [match.group(2) for match in FIGURE.finditer(source)]
-    duplicates = sorted({asset for asset in assets if assets.count(asset) > 1})
-    if duplicates:
-        raise BuildError('Duplicate figure(s): ' + ', '.join(duplicates))
-    missing = [asset for asset in assets if not (path.parent / asset).is_file()]
-    if missing:
-        raise BuildError('Figure file(s) not found: ' + ', '.join(missing))
-    source = FIGURE.sub(lambda match: figure(match.group(1), match.group(2), match.group(3) or ''),
+    source = FIGURE.sub(lambda match: figure(match.group(1), staged(match.group(2)),
+                                             match.group(3) or ''),
                         source)
     # Captions are raw LaTeX now, which citeproc never reads; cite every key
     # once in a hidden block so each still gets a bibliography entry, and
     # resolve_raw_latex_citations() numbers the caption citations afterwards.
-    keys = list(dict.fromkeys(re.findall(r'(?<![\w.])@([A-Za-z0-9_:-]+)', source)))
-    source += '\n```{=latex}\n\\iffalse\n```\n[' + '; '.join('@' + k for k in keys) + ']\n```{=latex}\n\\fi\n```\n'
+    keys = citation_keys(source)
+    if keys:
+        source += '\n```{=latex}\n\\iffalse\n```\n[' + '; '.join('@' + k for k in keys) + ']\n```{=latex}\n\\fi\n```\n'
     path.write_text(source, encoding='utf-8')
