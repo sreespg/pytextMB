@@ -80,6 +80,23 @@ def test_author_list_and_affiliations(tmp_path):
 
 
 @needs_latex
+def test_long_glossary_fits_and_labels_keep_their_width(tmp_path):
+    rows = ''.join(f'| AB{i:02d} | Definition number {i} |\n' for i in range(60))
+    source = write(tmp_path / 'paper.md', '---\ntitle: "T"\nauthor: "A"\nabstract: "Short."\n---\n\n'
+                   '# Abbreviations\n| Abbreviation | Definition |\n| --- | --- |\n'
+                   '| GEFCom2014 | Global Energy Forecasting Competition 2014 |\n' + rows
+                   + '\n# 1. Introduction\n\nText.\n')
+    result = pytexMB.build(source, formats=['pdf', 'docx'])
+    assert '\\begin{tabularx}{\\linewidth}{@{}l' in result.tex.read_text(encoding='utf-8')
+    log = result.tex.with_suffix('.log').read_text(encoding='utf-8', errors='replace')
+    # An unbreakable glossary taller than the space left on page 1 overflows it.
+    assert 'Overfull \\vbox' not in log
+    with zipfile.ZipFile(result.docx) as docx:
+        xml = docx.read('word/document.xml').decode('utf-8')
+    assert 'Global Energy Forecasting Competition 2014' in ' '.join(re.sub(r'<[^>]+>', ' ', xml).split())
+
+
+@needs_latex
 def test_cli_tex_only_then_clean(example, monkeypatch):
     monkeypatch.chdir(example)
     assert main(['tex', '-q']) == 0

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.2
+
+- A long Abbreviations glossary no longer runs off the first page of the
+  `applied-energy` PDF: it stays below the abstract when it fits and
+  otherwise floats to the top of a column, as in `iet-rpg`, in the text
+  font.
+- Glossary abbreviations keep their natural width, so `CGA–LSTM` or
+  `GraphSAGE` no longer wrap or overrun; the definitions take the rest of
+  the line. The glossary is a `tabularx`, which every built-in template
+  now loads.
+
 ## 1.2.1
 
 - Reading the header no longer prints Pandoc warnings about equations it

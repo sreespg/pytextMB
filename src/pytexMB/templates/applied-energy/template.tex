@@ -29,6 +29,7 @@
 \usepackage{unicode-math}
 \IfFontExistsTF{STIX Math}{\setmathfont{STIX Math}}{\setmathfont{TeX Gyre Termes Math}}
 \usepackage{longtable}
+\usepackage{tabularx}
 \usepackage{calc}
 \usepackage{etoolbox}
 \usepackage{svg}
@@ -70,14 +71,17 @@
 \def\fps@figure{tbp}
 \makeatother
 
-% The framed Abbreviations glossary sits inline in the left column, below
-% the abstract.
+% The framed Abbreviations glossary stays below the abstract when it fits
+% there, and otherwise floats to the top of a column: an inline box cannot
+% break, so a long glossary would run off the first page. CAS sets tables
+% in sans serif; the glossary keeps the text font.
 \newsavebox{\abbreviationscontent}
 \newenvironment{abbreviationsbox}
- {\begin{lrbox}{\abbreviationscontent}\begin{minipage}{0.94\linewidth}
-  \textbf{Abbreviations}\par\smallskip
+ {\begin{table}[htp]\centering
+  \begin{lrbox}{\abbreviationscontent}\begin{minipage}{0.94\linewidth}
+  \rmfamily\textbf{Abbreviations}\par\smallskip
   \footnotesize}
- {\end{minipage}\end{lrbox}\noindent\fbox{\usebox{\abbreviationscontent}}}
+ {\end{minipage}\end{lrbox}\fbox{\usebox{\abbreviationscontent}}\end{table}}
 
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 \setlength{\emergencystretch}{2em}

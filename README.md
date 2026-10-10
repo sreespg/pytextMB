@@ -424,7 +424,8 @@ A template is a folder containing:
   % pytexMB:body-end
   ```
 
-  It must also define an `abbreviationsbox` environment for the glossary;
+  It must also define an `abbreviationsbox` environment for the glossary,
+  which arrives as a `tabularx` table, so load `tabularx`;
 - a CSL style, for example from the
   [CSL styles repository](https://github.com/citation-style-language/styles).
   Use a numeric style.

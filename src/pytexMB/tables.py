@@ -71,6 +71,17 @@ def tables(path):
         n = len(re.findall(r'\\real\{', spec)) or len(re.findall('[lcr]', spec))
         if not n:
             raise BuildError('Cannot determine table column count')
+        if not caption:
+            # The uncaptioned table immediately below the Abbreviations heading is
+            # a glossary, not a numbered result table. Keep its editable Markdown
+            # source; each journal template defines abbreviationsbox, which
+            # frames and titles it and places it to suit that first page. Each
+            # abbreviation keeps its natural width, so none wraps, and the
+            # definitions take the rest of the line.
+            columns = 'l' + '>{\\raggedright\\arraybackslash}X' * (n - 1)
+            return ('\\begin{abbreviationsbox}\n{\\renewcommand{\\arraystretch}{1.08}\n'
+                    '\\begin{tabularx}{\\linewidth}{@{}' + columns + '@{}}\n'
+                    + body.strip() + '\n\\end{tabularx}}\n\\end{abbreviationsbox}')
         weights = automatic_column_weights(body, n)
         if column_weights:
             if len(column_weights) != n or any(weight <= 0 for weight in column_weights):
@@ -79,24 +90,12 @@ def tables(path):
             weights = [weight / total for weight in column_weights]
         elif 'tab:scope-boundary' in caption:
             weights = [.18, .82]
-        elif not caption:
-            weights = [.16, .84]
         length = '\\textwidth' if width == 'full' else '\\linewidth'
         environment = 'table*' if width == 'full' else 'table'
         columns = ''.join('>{\\raggedright\\arraybackslash}p{(' + length + ' - ' + str(2*(n-1)) + '\\tabcolsep) * \\real{' + str(w) + '}}' for w in weights)
-        closing_rule = '' if not caption else '\n\\bottomrule'
-        # Result tables use a relaxed row pitch. The first-page abbreviation
-        # glossary is tighter so it remains in the left column below the abstract
-        # instead of jumping to the right and leaving a large blank area.
-        row_pitch = '1.08' if not caption else '1.25'
-        table = ('{\\renewcommand{\\arraystretch}{' + row_pitch + '}\n\\begin{tabular}{@{}' + columns + '@{}}\n'
-                  + body.strip() + closing_rule + '\n\\end{tabular}}')
-        if not caption:
-            # The uncaptioned table immediately below the Abbreviations heading is
-            # a glossary, not a numbered result table. Keep its editable Markdown
-            # source; each journal template defines abbreviationsbox, which
-            # frames and titles it and places it to suit that first page.
-            return '\\begin{abbreviationsbox}\n' + table + '\n\\end{abbreviationsbox}'
+        # Result tables use a relaxed row pitch.
+        table = ('{\\renewcommand{\\arraystretch}{1.25}\n\\begin{tabular}{@{}' + columns + '@{}}\n'
+                  + body.strip() + '\n\\bottomrule\n\\end{tabular}}')
         # \small matches the CAS-dc table environment's own default size.
         return '\\begin{' + environment + '}[tp]\n\\centering\n\\small\n' + caption + '\n' + table + '\n\\end{' + environment + '}'
     text, count = re.subn(r'\\begin\{longtable\}\[\]\{@\{\}(.*?)@\{\}\}(.*?)\\end\{longtable\}', convert, text, flags=re.S)
