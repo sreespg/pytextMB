@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.2.0
+
+- An author list in the header: each author's `name`, `affiliation` (an
+  `id` from the `affiliations:` list), and optionally `orcid`,
+  `corresponding: true` and `email`; `short-authors:` sets the running head.
+  `applied-energy`, `iet-rpg` and the Word copy print the authors,
+  affiliations and corresponding author. A single `author:` string still
+  works.
+- `applied-energy` ships the CAS e-mail and URL icons, so `\ead` compiles.
+- References keep their link: Elsevier Vancouver prints the URL of any
+  entry that has one, and the IET style adds the DOI (or URL) to journal
+  papers, software, theses and proceedings.
+
 ## 1.1.0
 
 - `pytexMB.run(manuscript=..., template=..., ...)`: a whole build script in

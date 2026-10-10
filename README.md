@@ -294,6 +294,32 @@ keywords: [first keyword, second keyword]
 ---
 ```
 
+Several authors go in a list, each pointing to an affiliation by its `id`:
+
+```yaml
+author:
+  - name: First Author
+    affiliation: a
+    orcid: 0000-0000-0000-0000      # optional
+  - name: Second Author
+    affiliation: b
+    corresponding: true             # optional
+    email: second@example.org       # optional
+affiliations:
+  - id: a
+    organization: Department, University
+    address: Street 1
+    city: City
+    postcode: "1234"
+    country: Country
+  - id: b
+    ...
+short-authors: "First et al."       # optional; running head, default all names
+```
+
+Both journal templates and the Word copy print the list, the affiliations,
+and the corresponding author.
+
 The template picks the reference style, so a `csl:` line in the header is
 ignored.
 

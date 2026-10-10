@@ -3,9 +3,17 @@
 % it back into Word's Title, Author, and Abstract styles.
 \documentclass{article}
 \title{$title$}
-\author{$for(author)$$author$$sep$ \and $endfor$}
+\author{$for(author)$$if(author.name)$$author.name$\textsuperscript{$author.affiliation$}$else$$author$$endif$$sep$ \and $endfor$}
 \begin{document}
 \maketitle
+$for(affiliations)$
+\noindent\textsuperscript{$affiliations.id$} $affiliations.organization$, $affiliations.address$, $affiliations.city$ $affiliations.postcode$, $affiliations.country$.\par
+$endfor$
+$if(affiliation)$\noindent $affiliation$.\par$endif$
+$for(author)$$if(author.corresponding)$
+\noindent\textbf{Corresponding author:} $author.name$$if(author.email)$, $author.email$$endif$.\par
+$endif$$endfor$
+$if(corresponding-author)$\noindent\textbf{Corresponding author:} $corresponding-author$.\par$endif$
 $if(abstract)$
 \begin{abstract}
 $abstract$

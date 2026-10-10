@@ -1,4 +1,5 @@
 import logging
+import re
 import zipfile
 
 import pytest
@@ -32,6 +33,50 @@ def test_figures_anywhere_and_header_bibliography(tmp_path):
     assert 'Smith' in result.tex.read_text(encoding='utf-8')
     with zipfile.ZipFile(result.docx) as docx:
         assert any(name.startswith('word/media/') for name in docx.namelist())
+
+
+AUTHORS = """---
+title: "T"
+author:
+  - name: Ann Lee
+    affiliation: a
+  - name: Bo Kim
+    affiliation: b
+    corresponding: true
+    email: bo@example.org
+affiliations:
+  - id: a
+    organization: Dept A, Uni A
+    address: Road 1
+    city: Town
+    postcode: "1234"
+    country: Norway
+  - id: b
+    organization: Dept B, Uni B
+    address: Road 2
+    city: City
+    postcode: "5678"
+    country: Brunei
+short-authors: "Lee et al."
+---
+
+Text.
+"""
+
+
+@needs_latex
+def test_author_list_and_affiliations(tmp_path):
+    source = write(tmp_path / 'paper.md', AUTHORS)
+    result = pytexMB.build(source, formats=['pdf', 'docx'])
+    tex = result.tex.read_text(encoding='utf-8')
+    assert '\\author[a]{Ann Lee}' in tex and '\\ead{bo@example.org}' in tex
+    assert '\\affiliation[b]{organization={Dept B, Uni B}' in tex
+    assert '\\shortauthors{Lee et al.}' in tex
+    with zipfile.ZipFile(result.docx) as docx:
+        xml = docx.read('word/document.xml').decode('utf-8')
+    # Word splits text into runs at every space.
+    document = ' '.join(re.sub(r'<[^>]+>', ' ', xml).split())
+    assert 'Ann Lee' in document and 'Dept B, Uni B' in document and 'bo@example.org' in document
 
 
 @needs_latex

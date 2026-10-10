@@ -37,7 +37,7 @@ where = ["src"]
 
 # The journal templates ship inside the package.
 [tool.setuptools.package-data]
-pytexMB = ["docx_front.tex", "header.plain", "templates/*/*"]
+pytexMB = ["docx_front.tex", "header.plain", "templates/*/*", "templates/*/thumbnails/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

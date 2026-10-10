@@ -79,13 +79,20 @@
 
 \title{$title$}
 
-$if(affiliation)$
-\author[1]{$author$}
-\address[1]{\orgname{$affiliation$}}
+$for(author)$
+$if(author.name)$
+\author[$author.affiliation$]{$author.name$}
+$if(author.corresponding)$\corres{$author.name$$if(author.email)$, $author.email$$endif$.}$endif$
 $else$
-\author{$author$}
+$if(affiliation)$\author[1]{$author$}$else$\author{$author$}$endif$
 $endif$
-\authormark{$author$}
+$endfor$
+$for(affiliations)$
+\address[$affiliations.id$]{\orgname{$affiliations.organization$},
+  $affiliations.address$, $affiliations.city$ $affiliations.postcode$, $affiliations.country$}
+$endfor$
+$if(affiliation)$\address[1]{\orgname{$affiliation$}}$endif$
+\authormark{$if(short-authors)$$short-authors$$else$$for(author)$$if(author.name)$$author.name$$else$$author$$endif$$sep$, $endfor$$endif$}
 \titlemark{$if(short-title)$$short-title$$else$$title$$endif$}
 $if(corresponding-author)$
 \corres{$corresponding-author$}

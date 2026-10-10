@@ -110,20 +110,31 @@
 \def\textpagefraction{.001}
 
 \shorttitle{$if(short-title)$$short-title$$else$$title$$endif$}
-\shortauthors{$author$}
+\shortauthors{$if(short-authors)$$short-authors$$else$$for(author)$$if(author.name)$$author.name$$else$$author$$endif$$sep$, $endfor$$endif$}
 
 \title[mode=title]{$title$}
 
-$if(affiliation)$
-\author[1]{$author$}$if(orcid)$[orcid=$orcid$]$endif$
-\affiliation[1]{organization={$affiliation$}}
+\newif\ifhasauthororcid
+$if(orcid)$\hasauthororcidtrue$endif$
+$for(author)$
+$if(author.name)$
+\author[$author.affiliation$]{$author.name$}$if(author.orcid)$[orcid=$author.orcid$]$endif$
+$if(author.orcid)$\hasauthororcidtrue$endif$
+$if(author.corresponding)$\cormark[1]$endif$
+$if(author.email)$\ead{$author.email$}$endif$
 $else$
-\author{$author$}$if(orcid)$[orcid=$orcid$]$endif$
+$if(affiliation)$\author[1]{$author$}$else$\author{$author$}$endif$$if(orcid)$[orcid=$orcid$]$endif$
 $endif$
-$if(orcid)$$else$
+$endfor$
+$for(affiliations)$
+\affiliation[$affiliations.id$]{organization={$affiliations.organization$},
+  addressline={$affiliations.address$}, city={$affiliations.city$},
+  postcode={$affiliations.postcode$}, country={$affiliations.country$}}
+$endfor$
+$if(affiliation)$\affiliation[1]{organization={$affiliation$}}$endif$
+$for(author)$$if(author.corresponding)$\cortext[1]{Corresponding author.}$endif$$endfor$
 % CAS prints an empty "orcid(s):" footnote even when no ORCID was supplied.
-\renewcommand{\printorcid}{}
-$endif$
+\ifhasauthororcid\else\renewcommand{\printorcid}{}\fi
 $if(corresponding-author)$
 \cormark[1]
 \cortext[1]{Corresponding author: $corresponding-author$}

@@ -164,6 +164,17 @@
           </group>
         </else>
       </choose>
+      <!-- Preserve a persistent locator for journal papers, software, theses,
+           and proceedings. Webpage URLs are already rendered above. -->
+      <choose>
+        <if variable="DOI">
+          <text variable="DOI" prefix=" https://doi.org/"/>
+        </if>
+        <else-if type="webpage post-weblog" match="any"/>
+        <else-if variable="URL">
+          <text variable="URL" prefix=" "/>
+        </else-if>
+      </choose>
     </layout>
   </bibliography>
 </style>

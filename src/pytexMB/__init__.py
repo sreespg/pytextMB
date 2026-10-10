@@ -60,4 +60,4 @@ from .settings import (BuildSettings, FileSettings, build_settings, file_setting
 __all__ = ['file_settings', 'build_settings', 'reset_settings', 'build', 'clean',
            'templates', 'check', 'install_files', 'run', 'FileSettings', 'BuildSettings',
            'BuildResult', 'BuildError']
-__version__ = '1.1.0'
+__version__ = '1.2.0'
