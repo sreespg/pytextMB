@@ -45,10 +45,11 @@ def read_header(source):
     """The YAML header entries pytexMB uses: `bibliography` (one file or a
     list), `template`, and `after-build`. Pandoc reads the header, so any
     YAML it accepts works; without smart punctuation, `--flag` stays as
-    written."""
+    written. Math is not parsed: the body is discarded, and plain text
+    cannot show some equations, which Pandoc would warn about."""
     require('pandoc')
-    text = run(['pandoc', str(source), '--from=markdown-smart', '--to=plain', '--wrap=none',
-                f'--template={HEADER}'],
+    text = run(['pandoc', str(source), '--from=markdown-smart-tex_math_dollars', '--to=plain',
+                '--wrap=none', f'--template={HEADER}'],
                what='pandoc (reading the YAML header)').stdout
     header = {'bibliography': [], 'template': None, 'after-build': None}
     for line in text.splitlines():

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+- Reading the header no longer prints Pandoc warnings about equations it
+  cannot show as plain text (`\hat{\mathbf{s}}`, `aligned` blocks with
+  `\label`). Only the header was being read; the outputs are unchanged.
+
 ## 1.2.0
 
 - An author list in the header: each author's `name`, `affiliation` (an

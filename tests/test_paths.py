@@ -2,7 +2,7 @@ import pytest
 
 import pytexMB
 from pytexMB import BuildError
-from pytexMB.paths import Paths, find_bibliographies, find_manuscript
+from pytexMB.paths import Paths, find_bibliographies, find_manuscript, read_header
 
 from conftest import BIB, SVG, manuscript, needs_pandoc, write
 
@@ -55,6 +55,16 @@ def test_header_names_journal_bibliographies_and_figures(tmp_path):
     assert paths.figures == (('img/plot.svg', tmp_path / 'img' / 'plot.svg'),)
     assert paths.staged('img/plot.svg') == 'figures/plot.svg'
     assert paths.output == tmp_path / 'build' / 'applied-energy'
+
+
+@needs_pandoc
+def test_header_read_quietly_whatever_the_math(tmp_path, caplog):
+    # Plain text cannot show these; the header read must not try.
+    source = manuscript(tmp_path, '$\\hat{\\mathbf{s}}$ and\n\n'
+                        '$$\\begin{aligned} a &= b \\label{eq:x} \\end{aligned}$$\n',
+                        after_build='"echo $HOME"')
+    assert read_header(source)['after-build'] == 'echo $HOME'
+    assert not [record for record in caplog.records if record.levelname == 'WARNING']
 
 
 @needs_pandoc
