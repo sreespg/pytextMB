@@ -90,6 +90,7 @@ def prepare_tex(path):
         lambda match: '\\textbf{Abbreviations}\\par\\smallskip\n\\footnotesize\n' + match.group(1),
         text, flags=re.S)
     text = number_docx_captions(text)
+    text = number_docx_equations(text)
     # Citeproc splits each reference into a margin label and an inline body.
     # Pandoc reads the two back as separate blocks, so Word strands `[1]` on a
     # line of its own above its reference. Joining them restores `[1] Ye M, ...`.
@@ -150,6 +151,41 @@ def number_docx_captions(text):
         raise BuildError('The generated LaTeX has no \\begin{document}')
     return preamble + marker + re.sub(
         r'\\begin\{(figure|table)\}(.*?)\\end\{\1\}', number, body, flags=re.S)
+
+
+def number_docx_equations(text):
+    """Write each equation's number beside it and into the prose that cites
+    it. LaTeX numbers every equation environment and resolves `\\ref{eq:...}`,
+    but Pandoc's LaTeX reader drops both, so Word showed the equations without
+    numbers and the prose as `Eq. ([eq:name])`. The count follows the order
+    the environments appear in, as LaTeX's counter does, so Word and the PDF
+    agree."""
+    preamble, marker, body = text.partition('\\begin{document}')
+    if not marker:
+        raise BuildError('The generated LaTeX has no \\begin{document}')
+    counter = {'equation': 0}
+    numbers = {}
+
+    def number(match):
+        counter['equation'] += 1
+        count = counter['equation']
+        content = match.group(1)
+        for label in re.findall(r'\\label\{([^}]+)\}', content):
+            numbers[label] = count
+        content = re.sub(r'\s*\\label\{[^}]+\}', '', content).rstrip()
+        # Word has no equation counter; the number sits after the equation,
+        # upright, as LaTeX sets it.
+        return f'\\begin{{equation}}{content}\\qquad\\text{{({count})}}\n\\end{{equation}}'
+
+    def cite(match):
+        command, label = match.groups()
+        if label not in numbers:
+            return match.group()
+        return f'({numbers[label]})' if command == 'eqref' else str(numbers[label])
+
+    body = re.sub(r'\\begin\{equation\}(.*?)\\end\{equation\}', number, body, flags=re.S)
+    body = re.sub(r'\\(eqref|ref)\{([^}]+)\}', cite, body)
+    return preamble + marker + body
 
 
 def styles(path):

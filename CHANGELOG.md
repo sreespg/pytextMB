@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.3
+
+- The Word copy numbers equations. Each labelled equation carries its
+  number, `(1)`, after it, as in the PDF, and `Eq. (\ref{eq:name})` in the
+  text reads `Eq. (1)` instead of `Eq. ([eq:name])`.
+
 ## 1.2.2
 
 - A long Abbreviations glossary no longer runs off the first page of the

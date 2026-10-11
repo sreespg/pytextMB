@@ -169,3 +169,16 @@ def test_run_script_builds_beside_itself(example):
     assert (output / 'note.pdf').is_file() and not (output / 'note.docx').exists()
     assert run_script(path, 'docx', '-q').returncode == 0
     assert (output / 'note.docx').is_file()
+
+
+@needs_latex
+def test_word_copy_numbers_equations_and_their_references(tmp_path):
+    body = ('Unlabelled:\n\n$$\na=b.\n$$\n\nLabelled:\n\n$$\n\\begin{aligned}\nc&=d,\\\\\ne&=f.\n'
+            '\\end{aligned}\n\\label{eq:second}\n$$\n\nAs Eq. (\\ref{eq:second}) shows.\n')
+    result = pytexMB.build(manuscript(tmp_path, body), formats=['pdf', 'docx'])
+    with zipfile.ZipFile(result.docx) as docx:
+        xml = docx.read('word/document.xml').decode('utf-8')
+    document = ''.join(re.sub(r'<[^>]+>', '', xml).split())
+    # The labelled equation is the only one LaTeX numbers, so it is (1).
+    assert 'e=f.(1)' in document and 'a=b.(' not in document
+    assert 'Eq.(1)shows' in document and 'eq:second' not in document
