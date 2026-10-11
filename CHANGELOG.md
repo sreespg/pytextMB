@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.5
+
+- `iet-rpg` draws `\circlelefthalfblack` (◐, a half-filled circle for
+  coverage tables). `applied-energy` gets it from unicode-math; `iet-rpg`
+  has no Unicode math font, so the command was undefined and the build
+  stopped.
+
 ## 1.2.4
 
 - `applied-energy` sets equations in STIX Two Math. It asked for the STIX

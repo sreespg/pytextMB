@@ -13,6 +13,13 @@
 \usepackage{xurl}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,calc}
+% applied-energy gets \circlelefthalfblack (a half-filled circle, as in
+% coverage tables) from unicode-math. This class has no Unicode math font,
+% so draw it, centred on the math axis and sized to match \checkmark.
+% Robust, because a TikZ picture breaks in a caption's moving argument.
+\providerobustcmd{\circlelefthalfblack}{\tikz[baseline=-0.55ex]{%
+  \fill (0,-0.33em) arc[start angle=270,end angle=90,radius=0.33em] -- cycle;
+  \draw[line width=0.06em] (0,0) circle[radius=0.33em];}}
 % Compact process-diagram palette shared with the other templates, so TikZ
 % figures render the same whichever journal is targeted.
 \definecolor{wfBlue}{RGB}{68,104,180}
