@@ -27,7 +27,16 @@
   \PackageWarningNoLine{pytexMB}{Inconsolata not installed; using Latin Modern Mono}%
   \setmonofont{Latin Modern Mono}}
 \usepackage{unicode-math}
-\IfFontExistsTF{STIX Math}{\setmathfont{STIX Math}}{\setmathfont{TeX Gyre Termes Math}}
+% Math uses STIX Two Math, the OpenType math successor of Elsevier's
+% STIXMath. The STIX 1.x "STIX Math" font has no OpenType math script, so
+% unicode-math rejects it and silently falls back to Latin Modern Math.
+% STIX Two Math is found by name when installed system-wide, or by file
+% name from TeX Live's stix2-otf; otherwise TeX Gyre Termes Math, with a
+% warning.
+\IfFontExistsTF{STIX Two Math}{\setmathfont{STIX Two Math}}{%
+  \IfFontExistsTF{STIXTwoMath-Regular.otf}{\setmathfont{STIXTwoMath-Regular.otf}}{%
+    \PackageWarningNoLine{pytexMB}{STIX Two Math not installed; using TeX Gyre Termes Math}%
+    \setmathfont{texgyretermes-math.otf}}}
 \usepackage{longtable}
 \usepackage{tabularx}
 \usepackage{calc}

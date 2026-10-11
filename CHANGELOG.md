@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.4
+
+- `applied-energy` sets equations in STIX Two Math. It asked for the STIX
+  1.x STIX Math font, which has no OpenType math script, so unicode-math
+  fell back to Latin Modern Math without saying so. Without STIX Two Math
+  the template now uses TeX Gyre Termes Math and warns.
+
 ## 1.2.3
 
 - The Word copy numbers equations. Each labelled equation carries its

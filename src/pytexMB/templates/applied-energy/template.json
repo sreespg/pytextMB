@@ -4,5 +4,5 @@
   "csl": "elsevier-vancouver.csl",
   "files": ["cas-dc.cls", "cas-common.sty", "cas-model2-names.bst",
             "thumbnails/cas-email.jpeg", "thumbnails/cas-url.jpeg"],
-  "fonts": ["STIX", "Inconsolata"]
+  "fonts": ["STIX", "STIX Two Math", "Inconsolata"]
 }

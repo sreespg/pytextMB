@@ -46,9 +46,10 @@ programs, which must be on your `PATH`:
 - `rsvg-convert` (Debian/Ubuntu: `librsvg2-bin`), for SVG figures
 
 For `applied-energy`, the STIX and Inconsolata fonts give the journal's
-exact look (Debian/Ubuntu: `fonts-stix fonts-inconsolata`). Without them it
-uses TeX Gyre Termes and Latin Modern Mono, which come with TeX Live, and
-says so.
+exact look (Debian/Ubuntu: `fonts-stix fonts-inconsolata`), and STIX Two
+Math sets the equations ([stipub/stixfonts](https://github.com/stipub/stixfonts),
+or TeX Live's `stix2-otf`). Without them it uses TeX Gyre Termes, TeX Gyre
+Termes Math and Latin Modern Mono, which come with TeX Live, and says so.
 
 ### Setting up a machine
 
