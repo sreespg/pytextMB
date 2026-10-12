@@ -4,9 +4,11 @@ width, as in
 
     ![Caption.](figures/name.svg){#fig:name width=full}
 
-width=full spans both columns and width=half fits one (default: full). An SVG
-is included as the PDF that stage() converts it to; a .tex figure (TikZ) is
-\\input and scaled to the same width. Every figure is copied into the LaTeX
+width=full spans both columns and width=half fits one (default: full). An
+optional scale shrinks that slot, as in {#fig:name width=full scale=0.9} for
+90% of \\textwidth; scale must be in (0, 1] and defaults to no shrinkage. An
+SVG is included as the PDF that stage() converts it to; a .tex figure (TikZ)
+is \\input and scaled to the same width. Every figure is copied into the LaTeX
 package's figures/ folder, wherever the Markdown says it is."""
 import re
 
@@ -23,8 +25,15 @@ def figure(caption, asset, attributes):
     width = width.group(1) if width else 'full'
     if width not in ('full', 'half'):
         raise BuildError(f'Figure {asset}: width must be full or half, not {width}')
+    scale = re.search(r'\bscale=([\d.]+)', attributes)
+    if scale:
+        factor = float(scale.group(1))
+        if not 0 < factor <= 1:
+            raise BuildError(f'Figure {asset}: scale must be between 0 and 1, not {scale.group(1)}')
     environment = 'figure*' if width == 'full' else 'figure'
     length = r'\textwidth' if width == 'full' else r'\linewidth'
+    if scale:
+        length = scale.group(1) + length
     if asset.endswith('.tex'):
         graphic = r'\resizebox{' + length + r'}{!}{\input{' + asset + '}}'
     else:

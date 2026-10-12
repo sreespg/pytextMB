@@ -28,6 +28,16 @@ def test_figure_needs_identifier_and_known_width():
         figure('Cap.', 'p.svg', '#fig:p width=third')
 
 
+def test_figure_scale_shrinks_the_width():
+    scaled = figure('Cap.', 'figures/p.svg', '#fig:p width=full scale=0.9')
+    assert '\\includegraphics[width=0.9\\textwidth]{figures/p.pdf}' in scaled
+
+
+def test_figure_scale_must_be_between_zero_and_one():
+    with pytest.raises(BuildError, match='scale'):
+        figure('Cap.', 'p.svg', '#fig:p scale=1.5')
+
+
 def test_compose_moves_figures_and_cites_caption_keys(tmp_path):
     path = tmp_path / 'm.md'
     path.write_text('![Cap [@k].](img/plot.svg){#fig:p}\n', encoding='utf-8')

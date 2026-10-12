@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.6
+
+- Figures take an optional `scale`, as in `{#fig:name width=full scale=0.9}`,
+  to shrink a figure within its full or half column slot instead of filling
+  it. Scale must be in (0, 1].
+
 ## 1.2.5
 
 - `iet-rpg` draws `\circlelefthalfblack` (◐, a half-filled circle for
