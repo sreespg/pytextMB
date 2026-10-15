@@ -75,7 +75,7 @@ def prepare_tex(path):
     # leading number in every cell of that column, so `12` is lost outright
     # and `2020 study` arrives as `study`. The prefix only sets print
     # alignment, which Word supplies itself.
-    text = text.replace('>{\\raggedright\\arraybackslash}', '')
+    text = re.sub(r'>\{\\(?:raggedright|centering|raggedleft)\\arraybackslash\}', '', text)
     text = re.sub(
         r'p\{\((\\(?:text|line)width) - \d+\\tabcolsep\) \* \\real\{([\d.]+)\}\}',
         r'p{\2\1}', text)

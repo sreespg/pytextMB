@@ -92,7 +92,15 @@ def tables(path):
             weights = [.18, .82]
         length = '\\textwidth' if width == 'full' else '\\linewidth'
         environment = 'table*' if width == 'full' else 'table'
-        columns = ''.join('>{\\raggedright\\arraybackslash}p{(' + length + ' - ' + str(2*(n-1)) + '\\tabcolsep) * \\real{' + str(w) + '}}' for w in weights)
+        # Keep each column's Markdown alignment (`:---:` centres, `---:` right-
+        # aligns); Pandoc records it as a prefix on each p{} column, or as a
+        # plain l/c/r letter when it sets no widths.
+        aligns = re.findall(r'>\{\\(raggedright|centering|raggedleft)\\arraybackslash\}p', spec)
+        if len(aligns) != n:
+            letters = re.findall('[lcr]', spec) if '\\real{' not in spec else []
+            aligns = ([{'l': 'raggedright', 'c': 'centering', 'r': 'raggedleft'}[c] for c in letters]
+                      if len(letters) == n else ['raggedright'] * n)
+        columns = ''.join('>{\\' + a + '\\arraybackslash}p{(' + length + ' - ' + str(2*(n-1)) + '\\tabcolsep) * \\real{' + str(w) + '}}' for a, w in zip(aligns, weights))
         # Result tables use a relaxed row pitch.
         table = ('{\\renewcommand{\\arraystretch}{1.25}\n\\begin{tabular}{@{}' + columns + '@{}}\n'
                   + body.strip() + '\n\\bottomrule\n\\end{tabular}}')
